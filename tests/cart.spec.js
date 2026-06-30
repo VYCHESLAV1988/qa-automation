@@ -1,29 +1,48 @@
+const { test, expect } = require('@playwright/test'); // достаём инструменты Playwright
+const { LoginPage } = require('../pages/LoginPage'); // достаём класс логина
+const { CartPage } = require('../pages/CartPage'); // достаём класс корзины
+const { USERNAME, PASSWORD } = require('../data/credentials'); // достаём логин и пароль
 
-const { test, expect } = require('@playwright/test'); // мы достаём из Playwright два инструмента — test 
-console.log("==========================================================================================");
-console.log("=                        01 TEST ADD PRODUCT TO CART                                     =");
-console.log("==========================================================================================")
-test('Add product to cart', async ({ page }) => {  
-    await page.goto('https://saucedemo.com'); // Перешли по ссылке в браузере
-    await page.fill('#user-name', 'standard_user'); // В поле юзера заполнил данные юзера
-    await page.fill('#password', 'secret_sauce'); // В поле пароль заполнил данные пароля
-    await page.click('#login-button'); // нажал на кнопку логин
-    await page.click('#add-to-cart-sauce-labs-backpack'); // Добавил товар в карзину 
-    await expect(page.locator('.shopping_cart_badge')).toHaveText('1'); //Проверить, что товар в корзине
-    await page.close();
+// ========== ВАРИАНТ ХАРДКОД ==========
+
+test('Add product to cart (hardcode)', async ({ page }) => {
+  await page.goto('https://www.saucedemo.com'); // перешли на сайт
+  await page.fill('#user-name', 'standard_user'); // ввели логин
+  await page.fill('#password', 'secret_sauce'); // ввели пароль
+  await page.click('#login-button'); // нажали логин
+  await page.click('#add-to-cart-sauce-labs-backpack'); // добавили товар
+  await expect(page.locator('.shopping_cart_badge')).toHaveText('1'); // проверили корзину
+  await page.close();
 });
 
-test('Remove product from cart', async({ page }) => {
-console.log("==========================================================================================");
-console.log("=                        02 TEST REMOVE PRODUCT FROM CART                                =");
-console.log("==========================================================================================")   
- await page.goto('https://www.saucedemo.com');
- await page.fill('#user-name', 'standard_user');
- await page.fill('#password', 'secret_sauce');
- await page.click('#login-button');
- await page.click('#add-to-cart-sauce-labs-backpack');
- await page.click('#remove-sauce-labs-backpack');
- await page.close();
+test('Remove product from cart (hardcode)', async ({ page }) => {
+  await page.goto('https://www.saucedemo.com'); // перешли на сайт
+  await page.fill('#user-name', 'standard_user'); // ввели логин
+  await page.fill('#password', 'secret_sauce'); // ввели пароль
+  await page.click('#login-button'); // нажали логин
+  await page.click('#add-to-cart-sauce-labs-backpack'); // добавили товар
+  await page.click('#remove-sauce-labs-backpack'); // удалили товар
+  await expect(page.locator('.shopping_cart_badge')).not.toBeVisible(); // корзина пуста
+  await page.close();
 });
 
+// ========== ВАРИАНТ С КЛАССОМ И ПЕРЕМЕННЫМИ ==========
 
+test('Add product to cart (page object)', async ({ page }) => {
+  const loginPage = new LoginPage(page); // создали объект логина
+  const cartPage = new CartPage(page); // создали объект корзины
+  await loginPage.login(USERNAME, PASSWORD); // залогинились одной строкой
+  await cartPage.addBackpack(); // добавили товар через класс
+  await expect(page.locator('.shopping_cart_badge')).toHaveText('1'); // проверили корзину
+  await page.close();
+});
+
+test('Remove product from cart (page object)', async ({ page }) => {
+  const loginPage = new LoginPage(page); // создали объект логина
+  const cartPage = new CartPage(page); // создали объект корзины
+  await loginPage.login(USERNAME, PASSWORD); // залогинились одной строкой
+  await cartPage.addBackpack(); // добавили товар через класс
+  await cartPage.removeBackpack(); // удалили товар через класс
+  await expect(page.locator('.shopping_cart_badge')).not.toBeVisible(); // корзина пуста
+  await page.close();
+});
