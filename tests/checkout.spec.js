@@ -2,12 +2,16 @@ const { test, expect } = require('@playwright/test'); // инструменты 
 const { LoginPage } = require('../pages/LoginPage'); // класс логина
 const { CartPage } = require('../pages/CartPage'); // класс корзины
 const { CheckoutPage } = require('../pages/CheckoutPage'); // класс заказа
-const { USERNAME, PASSWORD } = require('../data/credentials'); // логин и пароль
+const { USERNAME, PASSWORD, BASE_URL } = require('../data/credentials'); // логин, пароль, адрес
+
+// SETUP — открыть сайт перед каждым тестом
+test.beforeEach(async ({ page }) => {
+  await page.goto(BASE_URL); // перешли на сайт
+});
 
 // ========== ВАРИАНТ ХАРДКОД ==========
 
 test('Complete checkout (hardcode)', async ({ page }) => {
-  await page.goto('https://www.saucedemo.com'); // перешли на сайт
   await page.fill('#user-name', 'standard_user'); // ввели логин
   await page.fill('#password', 'secret_sauce'); // ввели пароль
   await page.click('#login-button'); // нажали логин
@@ -23,7 +27,7 @@ test('Complete checkout (hardcode)', async ({ page }) => {
   await page.close();
 });
 
-// ========== ВАРИАНТ С КЛАССАМИ ==========
+// ========== ВАРИАНТ С КЛАССАМИ И ПЕРЕМЕННЫМИ ==========
 
 test('Complete checkout (page object)', async ({ page }) => {
   const loginPage = new LoginPage(page); // объект логина

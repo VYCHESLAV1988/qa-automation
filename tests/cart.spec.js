@@ -1,12 +1,16 @@
 const { test, expect } = require('@playwright/test'); // достаём инструменты Playwright
 const { LoginPage } = require('../pages/LoginPage'); // достаём класс логина
 const { CartPage } = require('../pages/CartPage'); // достаём класс корзины
-const { USERNAME, PASSWORD } = require('../data/credentials'); // достаём логин и пароль
+const { USERNAME, PASSWORD, BASE_URL } = require('../data/credentials'); // логин, пароль, адрес
+
+// SETUP — открыть сайт перед каждым тестом
+test.beforeEach(async ({ page }) => {
+  await page.goto(BASE_URL); // перешли на сайт
+});
 
 // ========== ВАРИАНТ ХАРДКОД ==========
 
 test('Add product to cart (hardcode)', async ({ page }) => {
-  await page.goto('https://www.saucedemo.com'); // перешли на сайт
   await page.fill('#user-name', 'standard_user'); // ввели логин
   await page.fill('#password', 'secret_sauce'); // ввели пароль
   await page.click('#login-button'); // нажали логин
@@ -16,7 +20,6 @@ test('Add product to cart (hardcode)', async ({ page }) => {
 });
 
 test('Remove product from cart (hardcode)', async ({ page }) => {
-  await page.goto('https://www.saucedemo.com'); // перешли на сайт
   await page.fill('#user-name', 'standard_user'); // ввели логин
   await page.fill('#password', 'secret_sauce'); // ввели пароль
   await page.click('#login-button'); // нажали логин
