@@ -1,0 +1,21 @@
+//Created sript for test button in VS Code cikled allure report button in VS Code.
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Запустить тесты",
+      "type": "shell",
+      "command": "npx playwright test"
+    },
+    {
+      "label": "Открыть Allure отчёт",
+      "type": "shell",
+      "command": "allure serve allure-results"
+    },
+    {
+      "label": "Тесты + Allure",
+      "type": "shell",
+      "command": "npx playwright test ; allure serve allure-results"
+    }
+  ]
+}
