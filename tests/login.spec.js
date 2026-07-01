@@ -34,3 +34,13 @@ test('login blocked user', async ({ page }) => {
   await expect(page.locator('[data-test="error"]')).toContainText('locked out');  //Второй вариант проверки, что элемент содержит текст!
   await page.close();
 });
+
+//ВАРИАНТ 4: делаем логаут
+test('logout from SauceDemo', async ({ page }) => {
+const loginPage = new LoginPage(page);
+await loginPage.login(USERNAME, PASSWORD);
+await page.click('#react-burger-menu-btn'); //Открыть меню (гамбургер)
+await page.click('#logout_sidebar_link'); //Кликнуть на кнопку логаута
+await expect(page.locator('#login-button')).toBeVisible();
+await page.close();
+});
