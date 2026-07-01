@@ -14,6 +14,7 @@ import { defineConfig, devices } from '@playwright/test';
  */
 export default defineConfig({
   testDir: './tests',
+  outputDir: './screenshots',      // папка для скриншотов при падении
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -31,11 +32,12 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
-   headless: false,
+    screenshot: 'only-on-failure', // Добавляем скриншоты при падении теста 
+    headless: false,
     viewport: null,
     launchOptions: {
-      slowMo: 300,
-      args: ['--start-maximized'],
+      slowMo: 300, // Замедляем тесты на 300 мс, чтобы видеть что происходит 
+      args: ['--start-maximized',], // Размер окна и позиция окна 
     },
   },
 
@@ -57,24 +59,24 @@ export default defineConfig({
     },
 
     /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: { ...devices['iPhone 12'] },
-    // },
+    {
+       name: 'Mobile Chrome',
+       use: { ...devices['Pixel 5'] },
+     },
+     {
+       name: 'Mobile Safari',
+       use: { ...devices['iPhone 12'] },
+    },
 
-    /* Test against branded browsers. */
-    // {
-    //   name: 'Microsoft Edge',
-    //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
-    // },
-    // {
-    //   name: 'Google Chrome',
-    //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
-    // },
+     //Test against branded browsers. 
+     {
+       name: 'Microsoft Edge',
+       use: { ...devices['Desktop Edge'], channel: 'msedge' },
+     },
+     {
+      name: 'Google Chrome',
+       use: { ...devices['Desktop Chrome'], channel: 'chrome' },
+     },
   ],
 
   /* Run your local dev server before starting the tests */
@@ -84,4 +86,3 @@ export default defineConfig({
   //   reuseExistingServer: !process.env.CI,
   // },
 });
-
