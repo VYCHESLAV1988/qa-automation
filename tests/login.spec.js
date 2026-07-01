@@ -24,3 +24,13 @@ test('login with page object', async ({ page }) => {
   await expect(page).toHaveURL(/inventory/);
   await page.close();
 });
+
+// ===== ВАРИАНТ 3: Заблокированный пользователь =====
+test('login blocked user', async ({ page }) => {
+  await page.fill('#user-name', 'locked_out_user');
+  await page.fill('#password', 'secret_sauce');
+  await page.click('#login-button');
+  //await expect(page.locator('[data-test="error"]')).toBeVisible();   //Первый вариант проверки, что элемент видим!
+  await expect(page.locator('[data-test="error"]')).toContainText('locked out');  //Второй вариант проверки, что элемент содержит текст!
+  await page.close();
+});
